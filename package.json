@@ -1,0 +1,17 @@
+{
+  "name": "mysite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodemon -e js, ejs app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^2.6.2",
+    "express": "^4.17.1",
+    "materialize-css": "^1.0.0-rc.2",
+    "mysql": "^2.17.1"
+  }
+}

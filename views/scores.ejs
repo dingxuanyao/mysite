@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <% include ./header %>
+    <% include ./navbar %>
+
+  <body>
+    <div class="container">
+            <div id="highscores">
+            <h1>
+                High Scores
+            </h1>
+            <table class="center">
+                <tr>
+                    <th>Name</th>
+                    <th>Score</th>
+                    <th>Time</th>
+                </tr>
+                    
+                <% dbscores.forEach(result=> { %>
+                    <tr>
+                        <td><%= result.name %></td>
+                        <td><%= result.score %></td>
+                        <td><%= result.ts %></td>
+                        <td><button id="" onclick="delete_entry(<%= result.idscore %>)">Delete</button></td>
+                    </tr>   
+                <% }); %>
+
+                </table>
+            <ul>
+
+            </ul>
+        </div>
+    </div>
+  </body>
+
+    <script>
+        function delete_entry(id) {
+              var xhttp = new XMLHttpRequest();
+              xhttp.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                  console.log(this.responseText);
+                  }
+              };
+              xhttp.open("GET", "/deletescore" + `/${id}`, true);
+              xhttp.send(); 
+              location.reload();
+          }
+    </script>
+
+</html>
