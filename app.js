@@ -1,5 +1,6 @@
 const express = require('express');
 var mysql = require('mysql');
+var fs = require('fs');
 
 const app = express();
 const HOST = "dbtest-1.cpkotwvp3rnm.us-east-1.rds.amazonaws.com"
@@ -70,6 +71,15 @@ app.get('/snake', (req, res)=>{
     con.query("SELECT idscore,name, score, ts FROM nodeSnakeScores.score ORDER BY score DESC LIMIT 10;", function (err,results,fields) {
         // console.log(results);
         res.render('snake/index',{dbscores: results});
+    });
+});
+
+app.get('/dxy_resume2019.pdf', function (req, res) {
+    var filePath = "/dxy_resume2019.pdf";
+
+    fs.readFile(__dirname + filePath , function (err,data){
+        res.contentType("application/pdf");
+        res.send(data);
     });
 });
 
