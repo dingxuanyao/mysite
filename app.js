@@ -24,16 +24,13 @@ app.get('/contact', (req, res)=>{
 
 app.get('/snake/scores', (req, res)=>{
     con.query("SELECT idscore,name, score, ts FROM nodeSnakeScores.score ORDER BY score DESC LIMIT 10;", function (err,results,fields) {
-        // console.log(results);
         res.render('snake/scores',{dbscores: results});
     });
 });
 
 app.get('/submitscore/:name/:score', (req, res)=>{
     queryStr = `INSERT INTO nodeSnakeScores.score (name, score) VALUES ("${req.params.name}", ${req.params.score});`;
-    console.log(queryStr);
     con.query(queryStr, function (err,results,fields) {
-        // console.log(results);
         if (err){
             throw (err);
         }
@@ -43,9 +40,7 @@ app.get('/submitscore/:name/:score', (req, res)=>{
 
 app.get('/submitscore/:name/:score', (req, res)=>{
     queryStr = `INSERT INTO nodeSnakeScores.score (name, score) VALUES ("${req.params.name}", ${req.params.score});`;
-    console.log(queryStr);
     con.query(queryStr, function (err,results,fields) {
-        // console.log(results);
         if (err){
             throw (err);
         }
@@ -54,22 +49,19 @@ app.get('/submitscore/:name/:score', (req, res)=>{
 });
 
 app.get('/deletescore/:id', (req, res)=>{
-queryStr = `DELETE FROM nodeSnakeScores.score WHERE idscore="${req.params.id}";`;
-console.log(queryStr);
-con.query(queryStr, function (err,results,fields) {
-        // console.log(results);
-        if (err){
-        throw (err);
-        }
-        res.send('Score deleted');
-});
+    queryStr = `DELETE FROM nodeSnakeScores.score WHERE idscore="${req.params.id}";`;
+    con.query(queryStr, function (err,results,fields) {
+            if (err){
+            throw (err);
+            }
+            res.send('Score deleted');
+    });
 })
 
 
     
 app.get('/snake', (req, res)=>{
     con.query("SELECT idscore,name, score, ts FROM nodeSnakeScores.score ORDER BY score DESC LIMIT 10;", function (err,results,fields) {
-        // console.log(results);
         res.render('snake/index',{dbscores: results});
     });
 });
@@ -81,6 +73,10 @@ app.get('/dxy_resume2019.pdf', function (req, res) {
         res.contentType("application/pdf");
         res.send(data);
     });
+});
+
+app.get('*', (req, res)=>{
+    res.render('error')
 });
 
 app.listen(80);
