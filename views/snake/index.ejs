@@ -48,12 +48,28 @@
         }, 1000/gameSpeed);
 
         function updateDirection(event) {
-            console.log(event.key)
-            if (event.key == 'ArrowUp' || event.key == 'ArrowDown' || event.key == 'ArrowLeft' || event.key == 'ArrowRight'){
+            if (checkReverseDirection(event.key)){
                 direction = event.key;
             }
             document.removeEventListener("keydown", updateDirection);
-            
+        }
+        function checkReverseDirection(key) {
+            if (key != 'ArrowUp' && key != 'ArrowDown' && key != 'ArrowRight' && key != 'ArrowLeft'){
+                return false
+            }
+            if (key == 'ArrowUp' && direction == 'ArrowDown'){
+                return false
+            }
+            else if (key == 'ArrowLeft' && direction == 'ArrowRight'){
+                return false
+            }
+            else if (key == 'ArrowRight' && direction == 'ArrowLeft'){
+                return false
+            }
+            else if (key == 'ArrowDown' && direction == 'ArrowUp'){
+                return false
+            }
+            return true
         }
         function checkDeath(event) {
             if (snake[0].x == -1 || snake[0].x == 20 || snake[0].y == -1 || snake[0].y == 20){
