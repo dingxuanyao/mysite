@@ -1,0 +1,116 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: black;
+  background-image: url("../madeonearth.png");
+  background-repeat: no-repeat;
+  background-position-x: 30%;
+  background-size: 40%;
+  background-attachment: fixed;
+  font-family: "Karla", sans-serif;
+
+  color: #fff;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+  color: white;
+  text-decoration: none;
+}
+nav {
+  text-align: center;
+  height: 80px;
+}
+
+nav .line {
+  position: relative;
+  left: 30%;
+  width: 40%;
+  border-top: rgba(255, 255, 255, 0.164) 3px solid;
+}
+
+nav .block {
+  padding: 10px;
+  min-width: 10vw;
+  height: inherit;
+  display: inline-block;
+  vertical-align: top;
+  line-height: 60px;
+}
+nav .block .item {
+  position: relative;
+  top: 20%;
+  font-size: 2rem;
+}
+
+nav .block:hover {
+  background: linear-gradient(to bottom, #fdff727e 0%, #ffffff00 100%);
+}
+
+content {
+  position: absolute;
+  top: 30%;
+  left: 55%;
+}
+content h1 {
+  margin: 10px;
+  padding: 10px;
+  font-size: 2rem;
+  font-style: normal;
+}
+content .homepageitem {
+  display: block;
+  width: auto;
+  height: inherit;
+  margin: 10px;
+  padding: 10px;
+  border-left: rgba(255, 255, 255, 0.473) 2px solid;
+  /* border-right: rgba(255, 255, 255, 0.473) 2px solid; */
+  background: rgba(0, 0, 0, 0);
+}
+content .projectitem {
+  display: block;
+  width: auto;
+  height: inherit;
+  margin: 10px;
+  padding: 10px;
+  border-left: rgba(255, 255, 255, 0.473) 2px solid;
+  border-top: rgba(255, 255, 255, 0.473) 2px solid;
+  background: rgba(0, 0, 0, 0);
+  margin-bottom: 50px;
+}
+
+content .projectitem p,
+content .projectitem a {
+  line-height: 3rem;
+  font-size: 1.5rem;
+  display: block;
+}
+
+content .projectitem .line {
+  position: relative;
+  width: auto;
+  border-top: rgba(255, 255, 255, 0.164) 3px solid;
+}
+
+content .homepageitem:hover {
+  border-left: rgba(214, 200, 3, 0.616) 2px solid;
+  background: linear-gradient(to right, #fdff727e 0%, #ffffff00 100%);
+}
+
+content .projectitem a:hover {
+  background: linear-gradient(to right, #fdff727e 0%, #ffffff00 100%);
+}
+pre {
+  font-family: monospace, monospace;
+  /* 1 */
+  line-height: 0.65;
+  text-align: center;
+  font-size: 20px;
+  /* 2 */
+}

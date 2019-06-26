@@ -1,184 +1,194 @@
 <!DOCTYPE html>
 <html>
-    <% include ../header %>
-    <% include ../navbar %>
+  <% include ../header %>
 
   <body>
-    <div class="container">
-        <pre id="arena"></pre>
-        <div id="score">Your Score:</div>
+    <% include ../navbar %>
 
+    <content>
+      <pre id="arena"></pre>
+      <div id="score">Your Score:</div>
 
-        <form class="col s12">
-            <div class="input-field col s6">
-                <input type="text" name="name" id="name">Name
-            </div>
-            <div class="input-field col s6">
-                <button onclick="submitScore()">Submit</button>
-            </div>
-        </form>
+      <form>
+        <span>
+          Name: <input type="text" name="name" id="name" />
+        </div>
+        <span>
+          <button onclick="submitScore()">Submit</button>
+        </span>
+      </form>
 
-        
-
-        <div><a href="/snake/scores">High Scores</a></div>
-    </div>
-    
-    
-
+      <div><a href="/snake/scores">High Scores</a></div>
+    </content>
   </body>
 
-    <script>
-        document.addEventListener("keydown", updateDirection);
-        var gameScore = 0;
-        var death = false;
-        const arenaSize = 20;
-        var direction = "ArrowUp";
-        const gameSpeed = 5 //1 for slow. 10 for fast
-        var snake = [{x:Math.floor(arenaSize/2),y:arenaSize}];
-        var food = {x:Math.floor(Math.random() * arenaSize),y:Math.floor(Math.random() * arenaSize)};
-        var arena = [];
+  <script>
+    document.addEventListener("keydown", updateDirection);
+    var gameScore = 0;
+    var death = false;
+    const arenaSize = 20;
+    var direction = "ArrowUp";
+    const gameSpeed = 5; //1 for slow. 10 for fast
+    var snake = [{ x: Math.floor(arenaSize / 2), y: arenaSize }];
+    var food = {
+      x: Math.floor(Math.random() * arenaSize),
+      y: Math.floor(Math.random() * arenaSize)
+    };
+    var arena = [];
 
-        var interval = setInterval(() => {
-            document.addEventListener("keydown", updateDirection);
-            updateSnake();
-            if(!checkDeath()){
-                clearInterval(interval);
-            }
-            drawArena();
-        }, 1000/gameSpeed);
+    var interval = setInterval(() => {
+      document.addEventListener("keydown", updateDirection);
+      updateSnake();
+      if (!checkDeath()) {
+        clearInterval(interval);
+      }
+      drawArena();
+    }, 1000 / gameSpeed);
 
-        function updateDirection(event) {
-            if (checkReverseDirection(event.key)){
-                direction = event.key;
-            }
-            document.removeEventListener("keydown", updateDirection);
+    function updateDirection(event) {
+      if (checkReverseDirection(event.key)) {
+        direction = event.key;
+      }
+      document.removeEventListener("keydown", updateDirection);
+    }
+    function checkReverseDirection(key) {
+      if (
+        key != "ArrowUp" &&
+        key != "ArrowDown" &&
+        key != "ArrowRight" &&
+        key != "ArrowLeft"
+      ) {
+        return false;
+      }
+      if (key == "ArrowUp" && direction == "ArrowDown") {
+        return false;
+      } else if (key == "ArrowLeft" && direction == "ArrowRight") {
+        return false;
+      } else if (key == "ArrowRight" && direction == "ArrowLeft") {
+        return false;
+      } else if (key == "ArrowDown" && direction == "ArrowUp") {
+        return false;
+      }
+      return true;
+    }
+    function checkDeath(event) {
+      if (
+        snake[0].x == -1 ||
+        snake[0].x == 20 ||
+        snake[0].y == -1 ||
+        snake[0].y == 20
+      ) {
+        return false;
+      }
+      for (i = 1; i < snake.length; i++) {
+        if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
+          return false;
         }
-        function checkReverseDirection(key) {
-            if (key != 'ArrowUp' && key != 'ArrowDown' && key != 'ArrowRight' && key != 'ArrowLeft'){
-                return false
-            }
-            if (key == 'ArrowUp' && direction == 'ArrowDown'){
-                return false
-            }
-            else if (key == 'ArrowLeft' && direction == 'ArrowRight'){
-                return false
-            }
-            else if (key == 'ArrowRight' && direction == 'ArrowLeft'){
-                return false
-            }
-            else if (key == 'ArrowDown' && direction == 'ArrowUp'){
-                return false
-            }
-            return true
-        }
-        function checkDeath(event) {
-            if (snake[0].x == -1 || snake[0].x == 20 || snake[0].y == -1 || snake[0].y == 20){
-                return false;
-            }
-            for (i = 1; i<snake.length;i++){
-                if (snake[0].x == snake[i].x && snake[0].y == snake[i].y){
-                    return false
-                }
-            }
-            return true
+      }
+      return true;
+    }
+    function updateSnake(event) {
+      if (direction == "ArrowUp") {
+        snake.unshift({ x: snake[0].x, y: snake[0].y - 1 });
+      }
+      if (direction == "ArrowDown") {
+        snake.unshift({ x: snake[0].x, y: snake[0].y + 1 });
+      }
+      if (direction == "ArrowLeft") {
+        snake.unshift({ x: snake[0].x - 1, y: snake[0].y });
+      }
+      if (direction == "ArrowRight") {
+        snake.unshift({ x: snake[0].x + 1, y: snake[0].y });
+      }
 
-        }
-        function updateSnake(event) {
-            if (direction == "ArrowUp") {
-                snake.unshift({x:snake[0].x,y:snake[0].y-1});
-            }
-            if (direction == "ArrowDown") {
-                snake.unshift({x:snake[0].x,y:snake[0].y+1});
-            }
-            if (direction == "ArrowLeft") {
-                snake.unshift({x:snake[0].x-1,y:snake[0].y});
-            }
-            if (direction == "ArrowRight") {
-                snake.unshift({x:snake[0].x+1,y:snake[0].y});
-            }
+      if (snake[0].x == food.x && snake[0].y == food.y) {
+        updateScore();
+        spawnFood();
+      } else {
+        snake.pop();
+      }
 
-            if (snake[0].x == food.x && snake[0].y == food.y){
-                updateScore();
-                spawnFood();
-            } else {
-                snake.pop();
-            }
-            
-            // logSnake();
+      // logSnake();
+    }
+    function spawnFood() {
+      food = {
+        x: Math.floor(Math.random() * arenaSize),
+        y: Math.floor(Math.random() * arenaSize)
+      };
+    }
+    function updateScore() {
+      gameScore += 1;
+      document.getElementById("score").innerHTML = "Your Score: " + gameScore;
+    }
+    function logSnake() {
+      for (i = 0; i < snake.length; i++) {
+        console.log(snake[i]);
+      }
+    }
+    function drawArena() {
+      clearArena();
+      drawSnake();
+      drawFood();
+      displayArena();
+      // for (i=0;i<arena.length;i++){
+      //     document.getElementById('arena').innerHTML = arena;
+      // }
+    }
+    function clearArena() {
+      arena = [];
+      for (i = 0; i < arenaSize + 2; i++) {
+        arena.push("·");
+      }
+      arena.push("\n");
+      //clears the board to be redrawn
+      for (i = 0; i < arenaSize; i++) {
+        arena.push("·");
+        for (j = 0; j < arenaSize; j++) {
+          arena.push(" ");
         }
-        function spawnFood() {
-            food = {x:Math.floor(Math.random() * arenaSize),y:Math.floor(Math.random() * arenaSize)};
+        arena.push("·");
+        arena.push("\n");
+      }
+      for (i = 0; i < arenaSize + 2; i++) {
+        arena.push("·");
+      }
+      // console.log(arena);
+    }
+    function drawSnake() {
+      //updates board to reflect snake
+      for (i = 0; i < snake.length; i++) {
+        arena[getPositionInArena(snake[i].x, [snake[i].y])] = "O";
+      }
+    }
+    function drawFood() {
+      //updates board to reflect food
+      arena[getPositionInArena(food.x, food.y)] = "X";
+    }
+    function displayArena() {
+      //updates board to reflect food
+      document.getElementById("arena").innerHTML = arena.join("");
+    }
+    function getPositionInArena(x, y) {
+      var pos = arenaSize + 3;
+      pos += y * (arenaSize + 3);
+      pos += x + 1;
+      return pos;
+    }
+    function submitScore() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          console.log(this.responseText);
         }
-        function updateScore() {
-            gameScore += 1;
-            document.getElementById('score').innerHTML = "Your Score: " + gameScore;
-        }
-        function logSnake() {
-            for (i = 0; i < snake.length; i++){
-                console.log(snake[i]);
-            }
-        }
-        function drawArena(){
-            clearArena();
-            drawSnake();
-            drawFood();
-            displayArena();
-            // for (i=0;i<arena.length;i++){
-            //     document.getElementById('arena').innerHTML = arena;
-            // }
-        }
-        function clearArena(){
-            arena = [];
-            for (i = 0; i<arenaSize+2;i++){
-                arena.push("·");
-            }
-            arena.push("\n");
-            //clears the board to be redrawn
-            for (i = 0; i<arenaSize;i++){
-                arena.push("·");
-                for (j = 0;j<arenaSize;j++){
-                    arena.push(" ");
-                }
-                arena.push("·");
-                arena.push("\n");
-            }
-            for (i = 0; i<arenaSize+2;i++){
-                arena.push("·");
-            }
-            // console.log(arena);
-        }
-        function drawSnake(){
-            //updates board to reflect snake
-            for (i=0;i<snake.length;i++){
-                arena[getPositionInArena(snake[i].x,[snake[i].y])] = "O";
-            }
-        }
-        function drawFood(){
-            //updates board to reflect food
-            arena[getPositionInArena(food.x,food.y)] = "X";
-        }
-        function displayArena(){
-            //updates board to reflect food
-            document.getElementById('arena').innerHTML = arena.join('');
-        }
-        function getPositionInArena(x, y){
-            var pos = arenaSize + 3
-            pos += y*(arenaSize + 3)
-            pos += x+1
-            return pos
-        }
-        function submitScore() {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-                }
-            };
-            var submittedName = document.getElementById("name").value;
-            xhttp.open("GET", "/submitscore" + `/${submittedName}` + `/${gameScore}`, true);
-            xhttp.send(); 
-            location.reload();
-        }
-    </script>
-
+      };
+      var submittedName = document.getElementById("name").value;
+      xhttp.open(
+        "GET",
+        "/submitscore" + `/${submittedName}` + `/${gameScore}`,
+        true
+      );
+      xhttp.send();
+      location.reload();
+    }
+  </script>
 </html>
