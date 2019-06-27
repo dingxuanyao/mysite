@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
-  <% include ./header %>
-  <body>
+  <head>
+    <title>Tony Yao</title>
+    <% include ./header %>
+  </head>
+  
+  <body>  
     <% include ./navbar %>
 
     <content>
@@ -9,12 +13,16 @@
             Welcome to Tony Yao's portfolio.
         </h1>
         <br>
-        <a href="/projects" class="homepageitem">
-            PROJECTS
-        </a>        
-        <a href="/dxy_resume2019.pdf" class="homepageitem">
-            RESUME
-        </a>
+        <div class="projectitem">
+            <a href="/projects">
+              PROJECTS
+            </a>
+        </div>
+        <div class="projectitem">
+            <a href="/dxy_resume2019.pdf">
+              RESUME
+            </a>
+        </div>
     </content>
 
     </div>

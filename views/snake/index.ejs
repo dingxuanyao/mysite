@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html>
-  <% include ../header %>
-
+  <head>
+    <title>Snake</title>
+    <% include ../header %>
+  </head>
   <body>
     <% include ../navbar %>
 
     <content>
       <pre id="arena"></pre>
-      <div id="score">Your Score:</div>
-
-      <form>
-        <span>
-          Name: <input type="text" name="name" id="name" />
-        </div>
-        <span>
-          <button onclick="submitScore()">Submit</button>
-        </span>
-      </form>
-
-      <div><a href="/snake/scores">High Scores</a></div>
+      <div class="projectitem">
+        <p id="score">Your Score:</p>
+        <form style="vertical-align: middle">
+          <span style="font-size: 1.5rem">
+            Name: <input type="text" name="name" id="name" />
+          </span>
+          <span>
+            <button onclick="submitScore()">Submit score</button>
+          </span>
+        </form>
+        <div><a href="/snake/scores">High Scores</a></div>
+      </div>
     </content>
   </body>
 
