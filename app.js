@@ -1,14 +1,14 @@
 const express = require("express");
 var mysql = require("mysql");
 var fs = require("fs");
+const config = require("./config.json");
 
 const app = express();
-const HOST = "dbtest-1.cpkotwvp3rnm.us-east-1.rds.amazonaws.com";
 
 var con = mysql.createConnection({
-  host: HOST,
-  user: "admin2",
-  password: "3BhHQfwjiL"
+  host: config.host,
+  user: config.user,
+  password: config.password
 });
 
 app.set("view engine", "ejs");
