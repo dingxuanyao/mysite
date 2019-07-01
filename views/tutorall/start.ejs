@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tutor All</title>
+    <% include ../header %>
+  </head>
+  <body onload="parseToken()">
+    <% include ../navbar %>
+    <content>
+      <div class="projectitem">
+        <p>
+          Teach a topic
+        </p>
+        <div class="line"></div>
+        <form>
+          <label for="topic">Topic:</label>
+          <input type="text" name="topic" id="topic" value="" />
+          <div id="errormsg"></div>
+        </form>
+        <a href="#" onclick="startRoom()">
+          Start teaching
+        </a>
+      </div>
+    </content>
+    <script>
+      function parseToken() {
+        var xhttp = new XMLHttpRequest();
+        params = {
+          token: localStorage.getItem("token")
+        };
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            body = JSON.parse(this.responseText);
+            if (body.success == false) {
+              window.location.replace("/tutorall");
+            }
+            console.log(this.responseText.success);
+          } else if (this.readyState == 4 && this.status == 400) {
+            body = JSON.parse(this.responseText);
+            console.log(body.msg);
+          }
+        };
+        xhttp.open("POST", "/tutorall/api/verify", true);
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        xhttp.send(JSON.stringify(params));
+      }
+      function startRoom() {
+        console.log("start teaching");
+      }
+    </script>
+  </body>
+</html>

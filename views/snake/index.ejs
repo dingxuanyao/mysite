@@ -16,7 +16,7 @@
             Name: <input type="text" name="name" id="name" />
           </span>
           <span>
-            <button onclick="submitScore()">Submit score</button>
+            <button type="button" onclick="submitScore()">Submit score</button>
           </span>
         </form>
         <div><a href="/snake/scores">High Scores</a></div>
@@ -186,11 +186,10 @@
       var submittedName = document.getElementById("name").value;
       xhttp.open(
         "GET",
-        "/submitscore" + `/${submittedName}` + `/${gameScore}`,
+        "/snake/submitscore" + `/${submittedName}` + `/${gameScore}`,
         true
       );
       xhttp.send();
-      location.reload();
     }
   </script>
 </html>

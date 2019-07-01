@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tutor All</title>
+    <% include ../header %>
+  </head>
+  <body>
+    <% include ../navbar %>
+    <content>
+      <div class="projectitem">
+        <p>
+          Tutor All
+        </p>
+        <div class="line"></div>
+        <p>
+          This app provides a platform for tutors and students of all
+          disciplines to learn and grow.
+        </p>
+        <div class="line"></div>
+        <form>
+          <label for="username">Username:</label>
+          <input type="text" name="username" id="username" />
+          <label for="password">Password:</label>
+          <input type="password" name="password" id="password" />
+          <div id="errormsg"></div>
+        </form>
+
+        <a href="#" onclick="tutorallLogin()">
+          Login
+        </a>
+        <div class="line"></div>
+        <a href="/tutorall/register">
+          No account? Register here
+        </a>
+      </div>
+    </content>
+    <script>
+      function tutorallLogin() {
+        var xhttp = new XMLHttpRequest();
+        params = {
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value
+        };
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+            body = JSON.parse(this.responseText);
+            localStorage.setItem("token", body.token);
+            window.location.replace("/tutorall/start");
+          } else if (this.readyState == 4 && this.status == 400) {
+            body = JSON.parse(this.responseText);
+            document.getElementById("errormsg").innerHTML = body.msg;
+            console.log(body.msg);
+          }
+        };
+        xhttp.open("POST", "/tutorall/api/auth", true);
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        xhttp.send(JSON.stringify(params));
+      }
+    </script>
+  </body>
+</html>
