@@ -15,16 +15,22 @@
           <span style="font-size: 1.5rem">
             Name: <input type="text" name="name" id="name" />
           </span>
-          <span>
-            <button type="button" onclick="submitScore()">Submit score</button>
-          </span>
         </form>
+        <a href="#" onclick="submitScore()">
+          Submit Score
+        </a>
         <div><a href="/snake/scores">High Scores</a></div>
       </div>
     </content>
   </body>
-
+  <script src="https://hammerjs.github.io/dist/hammer.js"></script>
   <script>
+    var direction = "ArrowUp";
+    var mc = new Hammer(document.getElementById("arena"));
+    mc.get("swipe").set({ direction: Hammer.DIRECTION_ALL });
+    mc.on("swipeleft swiperight swipeup swipedown", ev =>
+      updateDirectionSwipe(ev.type)
+    );
     document.addEventListener("keydown", updateDirection);
     var gameScore = 0;
     var death = false;
@@ -53,6 +59,24 @@
       }
       document.removeEventListener("keydown", updateDirection);
     }
+
+    function updateDirectionSwipe(type) {
+      console.log(type);
+      let temp;
+      if (type == "swipeup") {
+        temp = "ArrowUp";
+      } else if (type == "swipedown") {
+        temp = "ArrowDown";
+      } else if (type == "swipeleft") {
+        temp = "ArrowLeft";
+      } else if (type == "swiperight") {
+        temp = "ArrowRight";
+      }
+      if (checkReverseDirection(temp)) {
+        direction = temp;
+      }
+    }
+
     function checkReverseDirection(key) {
       if (
         key != "ArrowUp" &&
@@ -190,6 +214,7 @@
         true
       );
       xhttp.send();
+      location.reload();
     }
   </script>
 </html>

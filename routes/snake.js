@@ -48,7 +48,6 @@ router.get("/deletescore/:id", (req, res) => {
       throw err;
     }
     res.send("Score deleted");
-    location.reload();
   });
 });
 

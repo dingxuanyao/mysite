@@ -8,6 +8,10 @@ const RoomSchema = new Schema({
     required: true,
     unique: true
   },
+  topic: {
+    type: String,
+    required: true
+  },
   teachersdp: {
     type: String
   },
