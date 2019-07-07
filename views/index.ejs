@@ -4,27 +4,126 @@
     <title>Tony Yao</title>
     <% include ./header %>
   </head>
-  
-  <body>  
+
+  <body>
     <% include ./navbar %>
 
     <content>
-        <h1>
-            Welcome to Tony Yao's portfolio.
-        </h1>
-        <br>
-        <div class="projectitem">
-            <a href="/projects">
-              PROJECTS
-            </a>
-        </div>
-        <div class="projectitem">
-            <a href="/dxy_resume2019.pdf">
-              RESUME
-            </a>
-        </div>
-    </content>
+      <div class="fullpage">
+        <h1 id="intro"></h1>
+      </div>
 
-    </div>
+      <div id="projects" class="fullpage">
+        <h1>
+          Here's a list of my projects.
+        </h1>
+
+        <div class="projectitem">
+          <p>
+            Tutor All (WORK IN PROGRESS)
+          </p>
+          <div class="line"></div>
+          <p>
+            This app provides a platform for on-demand tutoring of all
+            disciplines. Its database of choice is <green>MongoDB</green> and
+            P2P video communication is facilitated by <green>WebRTC</green>.
+          </p>
+          <div class="line"></div>
+
+          <a href="/tutorall">
+            Check it out
+          </a>
+        </div>
+        <div class="projectitem">
+          <p>
+            THIS WEBSITE
+          </p>
+          <div class="line"></div>
+          <p>
+            This website is stylized with custom css, served with
+            <green>node.js</green>, containerized with <green>Docker</green>,
+            and hosted with <green>AWS ECS</green>
+          </p>
+          <div class="line"></div>
+          <a href="/">
+            Homepage
+          </a>
+          <a href="https://github.com/dingxuanyao/mysite">
+            Source Code
+          </a>
+        </div>
+        <div class="projectitem">
+          <p>
+            SNAKE
+          </p>
+          <div class="line"></div>
+          <p>
+            This remake of snake is rendered with Javascript. Its high scores
+            are hosted by <green>MySQL</green> and manipulated with APIs
+            serviced by
+            <green>node.js</green>
+          </p>
+          <div class="line"></div>
+          <a href="/snake">
+            Play game
+          </a>
+          <a href="https://github.com/dingxuanyao/nodesnakeappsql">
+            Source Code
+          </a>
+        </div>
+      </div>
+
+      <div id="contact" class="fullpage">
+        <h1>
+          My contact info:
+        </h1>
+        <div class="projectitem">
+          <a href="/dxy_resume2019.pdf">
+            <i class="material-icons md-light">description</i>RESUME
+          </a>
+        </div>
+        <div class="projectitem">
+          <a href="https://github.com/dingxuanyao">
+            <i class="material-icons md-light">code</i>
+            GITHUB
+          </a>
+        </div>
+        <div class="projectitem">
+          <a href="https://linkedin.com/in/dxy/">
+            <i class="material-icons md-light">people</i>LINKEDIN
+          </a>
+        </div>
+        <div class="projectitem">
+          <p>
+            <i class="material-icons md-light">email</i>EMAIL:
+            tonyyao95@gmail.com
+          </p>
+        </div>
+        <div class="projectitem">
+          <p>
+            <i class="material-icons md-light">phone</i>PHONE: +1 (647) 470-8886
+          </p>
+        </div>
+      </div>
+    </content>
+    <script>
+      intro_str = "Welcome to Tony Yao's portfolio.";
+      let i = 0;
+      var temp = "";
+      let introStr = setTimeout(function newChar() {
+        if (i < intro_str.length + 1) {
+          console.log;
+          // if (intro_str[i] == "f") {
+          //   this.clearTimeout();
+          // }
+          introStr = setTimeout(newChar, 80);
+          document.getElementById("intro").innerHTML =
+            intro_str.slice(0, i) + "|";
+          i++;
+        } else {
+          document.getElementById("intro").innerHTML = intro_str;
+        }
+      }, 80);
+    </script>
   </body>
 </html>

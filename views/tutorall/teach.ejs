@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tutor All</title>
+    <% include ../header %>
+  </head>
+  <body>
+    <% include ../navbar_tutorall %>
+    <content>
+      <video
+        id="teacher_video"
+        class="small"
+        playsinline
+        autoplay
+        muted
+      ></video>
+      <video id="student_video" class="large" playsinline autoplay></video>
+    </content>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="/js/tutorall.js"></script>
+    <script>
+      console.log(configuration);
+      let localStream;
+      let peer_connection1 = new RTCPeerConnection(configuration);
+      peer_connection1.addEventListener("track", e => {
+        console.log("track event: " + e);
+      });
+      let repeatGetSDP;
+      let repeatGetIceCandidates;
+      const teacher_video = document.getElementById("teacher_video");
+      const student_video = document.getElementById("student_video");
+      const offerOptions = {
+        offerToReceiveAudio: true,
+        offerToReceiveVideo: true
+      };
+      document.addEventListener("DOMContentLoaded", function() {
+        start();
+      });
+      async function start() {
+        //set local RTCSessionDescription and send it to Mongo
+        await addmediastream(teacher_video, peer_connection1);
+        let RTCSessionDescription = await peer_connection1.createOffer(
+          offerOptions
+        );
+        peer_connection1.setLocalDescription(RTCSessionDescription);
+        sendSDP(RTCSessionDescription, "teach", `<%= room_id %>`);
+
+        //repeatedly look for student RTCSessionDescription
+        repeatGetSDP = setTimeout(async function iceCandidateQuery() {
+          let remoteRTCSessionDescription = await getSDP(
+            "learn",
+            `<%= room_id %>`
+          );
+          remoteRTCSessionDescription =
+            remoteRTCSessionDescription.studentRTCSessionDescription;
+          peer_connection1.setRemoteDescription(remoteRTCSessionDescription);
+          repeatGetSDP = setTimeout(iceCandidateQuery, 5000);
+        }, 5000);
+      }
+      peer_connection1.addEventListener("icecandidate", event => {
+        sendIceCandidate(event.candidate, "teach", `<%= room_id %>`);
+      });
+      peer_connection1.addEventListener("connectionstatechange", event => {
+        console.log(
+          "Peer Connection connectionstate: " + peer_connection1.connectionState
+        );
+        if (peer_connection1.connectionState == "connected") {
+          clearTimeout(repeatGetIceCandidates);
+
+          //Once ICE candidate connection state is connected, add mediastream
+          //   addmediastream();
+        }
+      });
+      peer_connection1.ontrack = ({ streams: [stream] }) =>
+        (student_video.srcObject = stream);
+      peer_connection1.addEventListener("signalingstatechange", event => {
+        console.log(
+          "Signalling Connection state: " + peer_connection1.signalingState
+        );
+        if (peer_connection1.signalingState == "stable") {
+          clearTimeout(repeatGetSDP);
+
+          //Once signalling state is stable, look for ICE candidates from mongo
+          repeatGetIceCandidates = setTimeout(async function iceCandidate() {
+            let candidates = await getIceCandidates("learn", `<%= room_id %>`);
+            candidates.studentIceCandidates.forEach(candidate => {
+              if (peer_connection1.connectionState == "connected") {
+                clearTimeout(repeatGetIceCandidates);
+              }
+              peer_connection1.addIceCandidate(candidate);
+            });
+
+            repeatGetIceCandidates = setTimeout(iceCandidate, 5000);
+          }, 5000);
+        }
+      });
+    </script>
+  </body>
+</html>

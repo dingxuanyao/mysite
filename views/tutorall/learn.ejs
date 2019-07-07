@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tutor All</title>
+    <% include ../header %>
+  </head>
+  <body>
+    <% include ../navbar_tutorall %>
+    <content>
+      <video id="teacher_video" class="large" playsinline autoplay></video>
+      <video
+        id="student_video"
+        class="small"
+        playsinline
+        autoplay
+        muted
+      ></video>
+    </content>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="/js/tutorall.js"></script>
+    <script>
+      let peer_connection2;
+      let repeatGetIceCandidates;
+      const teacher_video = document.getElementById("teacher_video");
+      const student_video = document.getElementById("student_video");
+      peer_connection2 = new RTCPeerConnection(configuration);
+      document.addEventListener("DOMContentLoaded", function() {
+        start();
+      });
+      async function start() {
+        // await code here
+        await addmediastream(student_video, peer_connection2);
+        let remoteRTCSessionDescription = await getSDP(
+          "teach",
+          `<%= room_id %>`
+        );
+        remoteRTCSessionDescription =
+          remoteRTCSessionDescription.teacherRTCSessionDescription;
+        peer_connection2.setRemoteDescription(remoteRTCSessionDescription);
+        localRTCSessionDescription = await peer_connection2.createAnswer();
+        peer_connection2.setLocalDescription(localRTCSessionDescription);
+        sendSDP(localRTCSessionDescription, "learn", `<%= room_id %>`);
+      }
+      peer_connection2.addEventListener("icecandidate", event => {
+        sendIceCandidate(event.candidate, "learn", `<%= room_id %>`);
+      });
+
+      peer_connection2.ontrack = function(event) {
+        console.log(event.streams[0].getTracks());
+        teacher_video.srcObject = event.streams[0];
+      };
+      peer_connection2.addEventListener("track", processTrack);
+      function processTrack(e) {
+        console.log("processtrack");
+        if (teacher_video.srcObject !== event.streams[0]) {
+          teacher_video.srcObject = event.streams[0];
+          console.log("teacher_video received remote stream");
+        }
+      }
+      peer_connection2.addEventListener("signalingstatechange", event => {
+        console.log(
+          "Signalling Connection state: " + peer_connection2.signalingState
+        );
+        if (peer_connection2.signalingState == "stable") {
+          repeatGetIceCandidates = setTimeout(async function iceCandidate() {
+            let candidates = await getIceCandidates("teach", `<%= room_id %>`);
+            candidates.teacherIceCandidates.forEach(candidate => {
+              console.log(candidate);
+              if (peer_connection2.connectionState == "connected") {
+                console.log(candidate);
+                clearTimeout(repeatGetIceCandidates);
+              }
+              peer_connection2.addIceCandidate(candidate);
+            });
+
+            peer_connection2.addEventListener(
+              "connectionstatechange",
+              event => {
+                console.log(
+                  "Peer Connection connectionstate: " +
+                    peer_connection2.connectionState
+                );
+                if (peer_connection2.connectionState == "connected") {
+                  clearTimeout(repeatGetIceCandidates);
+
+                  //Once ICE candidate connection state is connected, add mediastream
+                  //   addmediastream();
+                }
+              }
+            );
+
+            repeatGetIceCandidates = setTimeout(iceCandidate, 5000);
+          }, 5000);
+        }
+      });
+    </script>
+  </body>
+</html>
