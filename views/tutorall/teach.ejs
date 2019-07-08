@@ -19,12 +19,8 @@
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="/js/tutorall.js"></script>
     <script>
-      console.log(configuration);
       let localStream;
       let peer_connection1 = new RTCPeerConnection(configuration);
-      peer_connection1.addEventListener("track", e => {
-        console.log("track event: " + e);
-      });
       let repeatGetSDP;
       let repeatGetIceCandidates;
       const teacher_video = document.getElementById("teacher_video");
@@ -36,6 +32,11 @@
       document.addEventListener("DOMContentLoaded", function() {
         start();
       });
+      window.addEventListener("unload", function() {
+        remove_room(`<%= room_id %>`);
+      });
+
+      // document.addEventListener("unload", );
       async function start() {
         //set local RTCSessionDescription and send it to Mongo
         await addmediastream(teacher_video, peer_connection1);
@@ -66,9 +67,6 @@
         );
         if (peer_connection1.connectionState == "connected") {
           clearTimeout(repeatGetIceCandidates);
-
-          //Once ICE candidate connection state is connected, add mediastream
-          //   addmediastream();
         }
       });
       peer_connection1.ontrack = ({ streams: [stream] }) =>

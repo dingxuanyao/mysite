@@ -19,7 +19,6 @@ router.get("/learn/:_id", (req, res) => {
   Room.find({
     _id: req.params._id
   }).then(room => {
-    console.log(room[0]);
     res.render("tutorall/learn", {
       teacherRTCSessionDescription: room[0].teacherRTCSessionDescription,
       room_id: req.params._id

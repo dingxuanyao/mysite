@@ -27,6 +27,9 @@
       document.addEventListener("DOMContentLoaded", function() {
         start();
       });
+      window.addEventListener("unload", function() {
+        remove_room(`<%= room_id %>`);
+      });
       async function start() {
         // await code here
         await addmediastream(student_video, peer_connection2);
@@ -46,17 +49,9 @@
       });
 
       peer_connection2.ontrack = function(event) {
-        console.log(event.streams[0].getTracks());
         teacher_video.srcObject = event.streams[0];
       };
-      peer_connection2.addEventListener("track", processTrack);
-      function processTrack(e) {
-        console.log("processtrack");
-        if (teacher_video.srcObject !== event.streams[0]) {
-          teacher_video.srcObject = event.streams[0];
-          console.log("teacher_video received remote stream");
-        }
-      }
+
       peer_connection2.addEventListener("signalingstatechange", event => {
         console.log(
           "Signalling Connection state: " + peer_connection2.signalingState
@@ -65,9 +60,7 @@
           repeatGetIceCandidates = setTimeout(async function iceCandidate() {
             let candidates = await getIceCandidates("teach", `<%= room_id %>`);
             candidates.teacherIceCandidates.forEach(candidate => {
-              console.log(candidate);
               if (peer_connection2.connectionState == "connected") {
-                console.log(candidate);
                 clearTimeout(repeatGetIceCandidates);
               }
               peer_connection2.addIceCandidate(candidate);

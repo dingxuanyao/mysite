@@ -10,7 +10,6 @@ router.post("/auth", (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    console.log("Missing input");
     return res.status(400).json({ msg: "Missing input" });
   }
 
@@ -26,10 +25,10 @@ router.post("/auth", (req, res) => {
         });
         const { iat, exp } = jwt.decode(token);
         res.send({ iat, exp, token });
+        console.log("User authenticated: " + username);
       });
     },
     reason => {
-      console.log("Username not found");
       res.json({
         success: false,
         msg: reason
@@ -43,7 +42,6 @@ router.post("/register", (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    console.log("Missing input");
     return res.status(400).json({ msg: "Missing input" });
   }
   const newUser = new User({
@@ -57,14 +55,13 @@ router.post("/register", (req, res) => {
       newUser.password = hash;
       newUser.save().then(
         user => {
-          console.log("promise fulfilled");
           res.json({
             success: true,
             user: newUser.username
           });
+          console.log("User registered: " + username);
         },
         reason => {
-          console.log("promise denied");
           res.json({
             success: false,
             msg: reason
@@ -84,23 +81,26 @@ router.post("/verify", async (req, res) => {
       success: true,
       username: decoded.username
     });
+    console.log("User verified: " + decoded.username);
   });
 });
 
 router.post("/createroom", async (req, res) => {
   //authenticate user
-  console.log(req.body);
   const { teacher, topic } = req.body;
   const newRoom = new Room({
     teacher,
     topic
   });
   newRoom.save().then(
-    () => {
+    room => {
       res.status(200).json({
         success: true,
         newRoom
       });
+      console.log(
+        "Room created:\n\tTeacher: " + teacher + "\n\tRoom ID: " + room._id
+      );
     },
     reason => {
       res.status(400).json({
@@ -117,7 +117,6 @@ router.get("/getrooms", async (req, res) => {
   });
 });
 router.post("/sendsdp", (req, res) => {
-  console.log(req.body);
   if (req.body.type == "teach") {
     property_name = "teacherRTCSessionDescription";
   } else if (req.body.type == "learn") {
@@ -133,6 +132,7 @@ router.post("/sendsdp", (req, res) => {
   ).then(
     () => {
       res.status(200).json({ success: true });
+      console.log("SDP saved: \n\tType: " + property_name);
     },
     reason => {
       res.status(400).json({ success: false, msg: reason });
@@ -140,7 +140,6 @@ router.post("/sendsdp", (req, res) => {
   );
 });
 router.post("/getsdp", (req, res) => {
-  console.log(req.body);
   if (req.body.type == "teach") {
     property_name = "teacherRTCSessionDescription";
   } else if (req.body.type == "learn") {
@@ -153,8 +152,8 @@ router.post("/getsdp", (req, res) => {
     property_name
   ).then(
     document => {
-      console.log(document);
       res.status(200).json(document);
+      console.log("SDP retrieved: \n\tType: " + property_name);
     },
     reason => {
       res.status(400).json({ success: false, msg: reason });
@@ -162,7 +161,6 @@ router.post("/getsdp", (req, res) => {
   );
 });
 router.post("/addicecandidate", (req, res) => {
-  console.log(req.body);
   if (req.body.type == "teach") {
     property_name = "teacherIceCandidates";
   } else if (req.body.type == "learn") {
@@ -175,7 +173,6 @@ router.post("/addicecandidate", (req, res) => {
     { $push: { [property_name]: req.body.candidate } }
   ).then(
     document => {
-      console.log("Candidate added: " + req.body.candidate);
       // { $push: { [property_name]: req.body. } }//add send ice candidate schema thing
       res.status(200).json({ success: true, candidate: req.body.candidate });
     },
@@ -184,8 +181,22 @@ router.post("/addicecandidate", (req, res) => {
     }
   );
 });
+
+router.post("/removeroom", (req, res) => {
+  Room.findOneAndDelete({
+    _id: req.body.room_id
+  }).then(
+    () => {
+      res.status(200).json({ success: true, room_id: req.body.room_id });
+      console.log("Room removed: " + req.body.room_id);
+    },
+    reason => {
+      res.status(400).json({ success: false, msg: reason });
+    }
+  );
+});
+
 router.post("/geticecandidates", (req, res) => {
-  console.log(req.body);
   if (req.body.type == "teach") {
     property_name = "teacherIceCandidates";
   } else if (req.body.type == "learn") {
@@ -198,7 +209,6 @@ router.post("/geticecandidates", (req, res) => {
     property_name
   ).then(
     document => {
-      console.log(document);
       res.status(200).json(document);
     },
     reason => {

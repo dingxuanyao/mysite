@@ -77,10 +77,24 @@ async function addmediastream(videoelement, peerconnection) {
   videoelement.srcObject = stream;
   localStream = stream;
   localStream.getTracks().forEach(track => {
-    peerconnection.addTrack(track, localStream); // LOCAL STREAM OR NOT IDK
-    console.log("Track added: ");
-    console.log(track);
+    peerconnection.addTrack(track, localStream);
   });
+}
+
+function remove_room(room_id) {
+  console.log("unloading");
+  var xhttp = new XMLHttpRequest();
+  params = {
+    room_id: room_id
+  };
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      body = JSON.parse(this.responseText);
+    }
+  };
+  xhttp.open("POST", `/tutorall/api/removeroom`, true);
+  xhttp.setRequestHeader("Content-Type", "application/json");
+  xhttp.send(JSON.stringify(params));
 }
 
 var configuration = {
